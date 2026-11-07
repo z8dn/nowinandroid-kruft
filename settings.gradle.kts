@@ -26,7 +26,33 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        // Kruft is not on the Plugin Portal yet: resolve it from a local
+        // `publishToMavenLocal` of z8dn/kenko, or from Central snapshots.
+        mavenLocal {
+            content { includeGroupAndSubgroups("io.github.z8dn") }
+        }
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
+            content { includeGroupAndSubgroups("io.github.z8dn") }
+            mavenContent { snapshotsOnly() }
+        }
     }
+}
+
+plugins {
+    id("io.github.z8dn.kruft.settings") version "0.1.0-SNAPSHOT"
+}
+
+// Tech-debt ledger: `./gradlew kruftReport` prints LOC, warnings, violations
+// and deprecations per module. No budgets yet, so those are report-only; add
+// maxPerModule/maxTotal once a baseline is recorded. `deprecations { }` arms
+// the @RemoveBy deadline gate in `./gradlew kruftVerify`.
+kruft {
+    // Measure only demoDebug, the variant CI already builds, instead of
+    // compiling all six demo/prod × debug/release/benchmark variants.
+    sources {
+        androidVariants("demoDebug")
+    }
+    deprecations { }
 }
 
 dependencyResolutionManagement {
