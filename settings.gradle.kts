@@ -47,6 +47,11 @@ plugins {
 // maxPerModule/maxTotal once a baseline is recorded. `deprecations { }` arms
 // the @RemoveBy deadline gate in `./gradlew kruftVerify`.
 kruft {
+    // Measure only demoDebug, the variant CI already builds, instead of
+    // compiling all six demo/prod × debug/release/benchmark variants.
+    sources {
+        androidVariants("demoDebug")
+    }
     deprecations { }
 }
 
